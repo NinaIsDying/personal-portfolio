@@ -1,1 +1,8 @@
-{}
+{
+  "title": "Niña Isabelle Tupas | Portfolio",
+  "description": "Portfolio of Niña Isabelle Tupas, a web developer and UI/UX designer.",
+  "language": "en",
+  "icons": {
+    "icon": "/favicon.png"
+  }
+}
