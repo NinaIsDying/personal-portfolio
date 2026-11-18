@@ -10,9 +10,18 @@ import siteConfiguration from "./.figma/make/site.json";
 export default defineConfig(({ mode }) => {
   // .figma/make/deploy-preview passes `--mode development` for cached-preview builds.
   const emitSourcemaps = mode === "development";
+  const deployBase = process.env.DEPLOY_BASE;
+  const githubRepositoryName = process.env.GITHUB_REPOSITORY?.split("/")[1];
+  const base = deployBase
+    ? `${deployBase.replace(/\/$/, "")}/`
+    : process.env.FIGMA_PUBLIC_URL
+      ? `${process.env.FIGMA_PUBLIC_URL}/`
+      : githubRepositoryName
+        ? `/${githubRepositoryName}/`
+        : "/";
 
   return {
-    base: process.env.FIGMA_PUBLIC_URL ? `${process.env.FIGMA_PUBLIC_URL}/` : "/",
+    base,
     build: {
       sourcemap: emitSourcemaps ? "inline" : false,
       minify: !emitSourcemaps,
@@ -20,7 +29,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
-      figmaSiteConfiguration(siteConfiguration),
+      figmaSiteConfiguration(siteConfiguration, base),
       figmaErrorOverlayReplay(),
       figmaReactRefreshBoundaryFallback(),
       figmaMakeKitPlugin({ storiesGlob: "/src/**/*.stories.{ts,tsx,js,jsx}" }),
@@ -74,7 +83,7 @@ type FigmaSiteConfiguration = {
 };
 
 /** Applies /.figma/make/site.json to the generated document shell. */
-function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
+function figmaSiteConfiguration(config: FigmaSiteConfiguration, base: string): Plugin {
   function sanitizeHtmlValue(value: string | undefined): string {
     return value?.replace(/[^a-zA-Z0-9_-]/g, "") || "";
   }
@@ -145,7 +154,10 @@ function figmaSiteConfiguration(config: FigmaSiteConfiguration): Plugin {
           });
         }
         if (favicon) {
-          tags.push({ tag: "link", attrs: { rel: "icon", href: favicon }, injectTo: "head" });
+          const faviconHref = favicon.startsWith("/")
+            ? `${base.replace(/\/$/, "")}${favicon}`
+            : favicon;
+          tags.push({ tag: "link", attrs: { rel: "icon", href: faviconHref }, injectTo: "head" });
         }
         if (title) {
           tags.push({

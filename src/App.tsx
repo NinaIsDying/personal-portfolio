@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const assetPath = "/assets";
+const assetPath = `${import.meta.env.BASE_URL}assets`;
 
 const skills = [
   "Full-Stack Development",
