@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const assetPath = `${import.meta.env.BASE_URL}assets`;
 
@@ -41,6 +41,21 @@ function NoteCard({ title, children }: { title: string; children: React.ReactNod
 
 export default function App() {
   const [message, setMessage] = useState("");
+  const [showBookmarkNav, setShowBookmarkNav] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  useEffect(() => {
+    const updateBookmarkNav = () => setShowBookmarkNav(window.scrollY > 180);
+
+    updateBookmarkNav();
+    window.addEventListener("scroll", updateBookmarkNav, { passive: true });
+    return () => window.removeEventListener("scroll", updateBookmarkNav);
+  }, []);
+
+  const handleSectionNavigate = (target: string) => {
+    setActiveSection(target);
+    scrollTo(target);
+  };
 
   const handleContact = (label: string) => {
     setMessage(`${label} details will be added soon.`);
@@ -56,17 +71,41 @@ export default function App() {
             <img className="hero-rule" aria-hidden="true" src={`${assetPath}/41d4e.svg`} />
             <h1 id="hero-title">Welcome to my Portfolio</h1>
           </div>
-          <img className="hero-circle" aria-hidden="true" src={`${assetPath}/fe31b.svg`} />
+          <div className="hero-emblem" aria-hidden="true">
+            <img className="hero-circle" src={`${assetPath}/fe31b.svg`} />
+            <img className="hero-lettermark" src={`${assetPath}/lettermark.png`} alt="" />
+          </div>
         </div>
 
         <nav className="section-nav" aria-label="Portfolio sections">
           {navItems.map((item) => (
-            <button key={item.target} onClick={() => scrollTo(item.target)}>
+            <button key={item.target} onClick={() => handleSectionNavigate(item.target)}>
               {item.label}
             </button>
           ))}
         </nav>
       </section>
+
+      <nav
+        className={`bookmark-nav ${showBookmarkNav ? "is-visible" : ""}`}
+        aria-label="Bookmark section navigation"
+        aria-hidden={!showBookmarkNav}
+      >
+        {navItems.map((item) => (
+          <button
+            key={item.target}
+            className={activeSection === item.target ? "is-active" : ""}
+            aria-pressed={activeSection === item.target}
+            tabIndex={showBookmarkNav ? 0 : -1}
+            onClick={() => handleSectionNavigate(item.target)}
+          >
+              <svg className="bookmark-outline" viewBox="0 0 100 90" aria-hidden="true">
+                <path d="M8 1.5h84q6.5 0 6.5 6.5v70q0 8-8 8L54 70q-4-2-8 0L9.5 86q-8 0-8-8V8Q1.5 1.5 8 1.5Z" />
+              </svg>
+              <span>{item.label}</span>
+          </button>
+        ))}
+      </nav>
 
       <section className="about dotted-edge" id="about" aria-labelledby="about-title">
         <div className="about-copy">

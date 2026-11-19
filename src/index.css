@@ -54,7 +54,8 @@ main {
 }
 
 .hero {
-  min-height: 730px;
+  min-height: 100vh;
+  min-height: 100svh;
   padding: 69px max(32px, calc((100% - 1218px) / 2));
   border-radius: 0 0 34px 34px;
   background: #f7c4ae;
@@ -96,9 +97,54 @@ main {
   line-height: 1.125;
 }
 
+.hero-emblem {
+  position: relative;
+  display: grid;
+  width: 300px;
+  height: 300px;
+  flex: 0 0 auto;
+  place-items: center;
+  margin-right: 26px;
+}
+
+.hero-circle,
+.hero-lettermark {
+  grid-area: 1 / 1;
+}
+
+.hero-circle {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-lettermark {
+  z-index: 1;
+  width: 72%;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 950px) {
+  .hero-emblem {
+    width: 210px;
+    height: 210px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-emblem {
+    position: absolute;
+    right: 22px;
+    width: 110px;
+    height: 110px;
+    margin: 0;
+    opacity: 0.9;
+  }
+}
+
 .hero-circle {
   flex: 0 0 auto;
-  margin-right: 26px;
 }
 
 .section-nav {
@@ -132,10 +178,90 @@ main {
   outline: none;
 }
 
+.bookmark-nav {
+  position: fixed;
+  z-index: 10;
+  top: 20px;
+  right: 0;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-12px);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.bookmark-nav.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.bookmark-nav button {
+  position: relative;
+  display: grid;
+  width: 94px;
+  height: 84px;
+  place-items: start center;
+  padding: 17px 7px 25px;
+  border: 0;
+  background: transparent;
+  font-family: "Unbounded:SemiBold", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.15;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.bookmark-outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: #f6957f;
+  stroke: #683232;
+  stroke-linejoin: round;
+  stroke-width: 3;
+  transition: fill 180ms ease;
+}
+
+.bookmark-nav button span {
+  position: relative;
+  z-index: 1;
+}
+
+.bookmark-nav button:hover,
+.bookmark-nav button:focus-visible {
+  outline: none;
+  transform: translateY(2px);
+}
+
+.bookmark-nav button:hover .bookmark-outline,
+.bookmark-nav button:focus-visible .bookmark-outline {
+  fill: #ffab97;
+}
+
+.bookmark-nav button.is-active {
+  color: #fff5b8;
+}
+
+.bookmark-nav button.is-active .bookmark-outline {
+  fill: #683232;
+}
+
+.bookmark-nav button.is-active:hover .bookmark-outline,
+.bookmark-nav button.is-active:focus-visible .bookmark-outline {
+  fill: #542727;
+}
+
 .about {
   position: relative;
   display: grid;
-  min-height: 797px;
+  min-height: 100vh;
+  min-height: 100svh;
   grid-template-columns: minmax(0, 1.65fr) minmax(340px, 0.85fr);
   gap: 76px;
   padding: 170px max(7.7vw, 32px) 52px;
@@ -259,7 +385,8 @@ main {
 }
 
 .apps {
-  min-height: 724px;
+  min-height: 100vh;
+  min-height: 100svh;
   padding: 61px max(7.7vw, 32px) 90px;
   border-radius: 34px;
   background: #ffece4;
@@ -301,7 +428,8 @@ main {
 
 .websites {
   display: grid;
-  min-height: 723px;
+  min-height: 100vh;
+  min-height: 100svh;
   grid-template-columns: 110px 1fr;
   gap: 78px;
   padding: 69px max(7.7vw, 32px) 122px;
@@ -344,6 +472,8 @@ main {
 
 .contact {
   position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
   padding-top: 198px;
   background: #ffd6c4;
 }
@@ -458,19 +588,14 @@ footer {
 
 @media (max-width: 950px) {
   .hero {
-    min-height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
     padding: 40px 28px;
   }
 
   .hero-panel {
     min-height: 390px;
     padding: 48px;
-  }
-
-  .hero-circle {
-    width: 210px;
-    height: 210px;
-    margin: 0;
   }
 
   .hero-rule,
@@ -566,14 +691,6 @@ footer {
     font-size: 38px;
   }
 
-  .hero-circle {
-    position: absolute;
-    right: 22px;
-    width: 110px;
-    height: 110px;
-    opacity: 0.9;
-  }
-
   .section-nav {
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
@@ -586,6 +703,19 @@ footer {
     border-width: 2px;
     border-radius: 15px;
     font-size: 10px;
+  }
+
+  .bookmark-nav {
+    top: 8px;
+    right: 0;
+    gap: 4px;
+  }
+
+  .bookmark-nav button {
+    width: clamp(58px, 17vw, 70px);
+    height: 58px;
+    padding: 12px 4px 17px;
+    font-size: 9px;
   }
 
   .about,
