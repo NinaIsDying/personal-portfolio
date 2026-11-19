@@ -212,7 +212,9 @@ main {
   font-size: 13px;
   font-weight: 600;
   line-height: 1.15;
-  transition: color 180ms ease, transform 180ms ease;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
 }
 
 .bookmark-outline {
@@ -397,15 +399,60 @@ main {
   text-align: center;
 }
 
-.app-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 244px));
-  justify-content: space-between;
-  gap: 40px;
+.app-carousel {
   margin-top: 34px;
 }
 
+.app-carousel-viewport {
+  overflow-x: auto;
+  padding: 12px 0 16px;
+  margin: -12px 0 -16px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.app-carousel-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.app-carousel-track {
+  display: flex;
+  gap: 24px;
+}
+
+.app-carousel-slide {
+  min-width: 0;
+  flex: 0 0 min(calc((100% - 48px) / 3), 244px);
+  scroll-snap-align: start;
+}
+
+.app-carousel-controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.app-carousel-controls button {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 2px solid #683232;
+  border-radius: 50%;
+  background: #f6957f;
+  color: #2d2d2d;
+  font-size: 32px;
+  line-height: 1;
+}
+
 .project-card {
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
   min-height: 220px;
   border-radius: 34px;
   background: white;
@@ -415,7 +462,33 @@ main {
 }
 
 .app-card {
-  min-height: 465px;
+  min-height: 0;
+  aspect-ratio: 9 / 16;
+}
+
+.project-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.app-card .project-image {
+  object-fit: cover;
+  object-position: top;
+}
+
+.website-grid {
+  align-items: start;
+}
+
+.website-grid .project-card {
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+}
+
+.website-grid .project-image {
+  object-fit: cover;
+  object-position: top;
 }
 
 .project-card:hover,
@@ -438,30 +511,57 @@ main {
 }
 
 .vertical-title {
-  position: relative;
-  min-height: 532px;
+  display: flex;
+  gap: 18px;
 }
 
 .vertical-title h2 {
-  position: absolute;
-  top: 4px;
-  left: 0;
-  width: 1ch;
   font-family: "Epilogue:SemiBold", sans-serif;
   font-size: 70px;
   font-weight: 600;
-  line-height: 0.97;
-  letter-spacing: -10.5px;
-  overflow-wrap: anywhere;
-  text-align: center;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
 }
 
-.vertical-title img {
+.vertical-title-rule {
+  width: 3px;
+  background: #000;
+}
+
+.image-lightbox {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 4vh 4vw;
+  background: rgb(20 14 18 / 88%);
+}
+
+.image-lightbox > img {
+  display: block;
+  max-width: 100%;
+  max-height: 92svh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.lightbox-close {
   position: absolute;
-  top: 53px;
-  left: 75px;
-  transform: rotate(90deg);
-  transform-origin: top left;
+  top: 16px;
+  right: 20px;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: #683232;
+  color: white;
+  font-size: 32px;
+  line-height: 1;
 }
 
 .website-grid {
@@ -542,23 +642,36 @@ footer {
   gap: 22px;
 }
 
-.contact-links button {
+.contact-links a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   min-height: 52px;
   padding: 0 40px;
   border: 3px solid black;
   border-radius: 34px;
   background: #f6957f;
+  color: #2d2d2d;
   font-size: 20px;
-  text-align: left;
+  text-decoration: none;
   transition:
     padding 180ms ease,
-    background 180ms ease;
+    background 180ms ease,
+    color 180ms ease;
 }
 
-.contact-links button:hover,
-.contact-links button:focus-visible {
+.contact-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+}
+
+.contact-links a:hover,
+.contact-links a:focus-visible,
+.contact-links a:active {
   padding-left: 54px;
   background: #ffab97;
+  color: #fffdf9;
   outline: none;
 }
 
@@ -624,12 +737,8 @@ footer {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .app-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .app-card {
-    min-height: 340px;
+  .app-carousel-slide {
+    flex-basis: min(calc((100% - 24px) / 2), 244px);
   }
 
   .websites {
@@ -642,19 +751,7 @@ footer {
   }
 
   .vertical-title h2 {
-    position: static;
-    width: auto;
     font-size: 60px;
-    letter-spacing: normal;
-    overflow-wrap: normal;
-    text-align: left;
-  }
-
-  .vertical-title img {
-    position: static;
-    display: block;
-    margin-top: 20px;
-    transform: none;
   }
 }
 
@@ -730,15 +827,17 @@ footer {
     background-image: radial-gradient(#ead3c9 1.5px, transparent 1.5px);
   }
 
-  .section-title h2,
-  .vertical-title h2 {
+  .section-title h2 {
     font-size: 42px;
   }
 
-  .section-title img,
-  .vertical-title img {
+  .section-title img {
     width: 240px;
     margin-top: 12px;
+  }
+
+  .vertical-title h2 {
+    font-size: 42px;
   }
 
   .bio {
@@ -786,16 +885,18 @@ footer {
     font-size: 15px;
   }
 
-  .app-grid,
   .website-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
   }
 
   .app-card,
-  .project-card {
-    min-height: 190px;
+  .website-grid .project-card {
     border-radius: 20px;
+  }
+
+  .app-carousel-slide {
+    flex-basis: min(82%, 244px);
   }
 
   .websites {
@@ -843,7 +944,7 @@ footer {
     gap: 12px;
   }
 
-  .contact-links button {
+  .contact-links a {
     min-height: 44px;
     border-width: 2px;
     font-size: 15px;
